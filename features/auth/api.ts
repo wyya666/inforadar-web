@@ -62,3 +62,13 @@ export async function logout(): Promise<void> {
   const { error, response } = await apiClient.POST("/auth/logout");
   if (error) throw toApiError(error, response);
 }
+
+export async function requestPasswordReset(email: string): Promise<void> {
+  const { error, response } = await apiClient.POST("/auth/forgot-password", { body: { email } });
+  if (error) throw toApiError(error, response);
+}
+
+export async function resetPassword(token: string, password: string): Promise<void> {
+  const { error, response } = await apiClient.POST("/auth/reset-password", { body: { token, password } });
+  if (error) throw toApiError(error, response);
+}
