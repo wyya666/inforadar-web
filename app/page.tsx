@@ -1,69 +1,122 @@
-import Image from "next/image";
+import { ArrowRight, BellRing, Radar, Search, Sparkles } from "lucide-react";
+import Link from "next/link";
+
+const steps = [
+  {
+    icon: Sparkles,
+    title: "描述你的关注",
+    description: "用一句自然语言告诉 AI 你真正关心的问题。",
+  },
+  {
+    icon: Search,
+    title: "持续扫描公开网页",
+    description: "按你设置的频率搜索新内容，并自动去除重复信息。",
+  },
+  {
+    icon: BellRing,
+    title: "只接收重要结果",
+    description: "AI 判断相关性、生成摘要，每天汇总为一封邮件。",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="landing-shell">
+      <nav className="landing-nav" aria-label="主导航">
+        <Link className="brand" href="/">
+          <span className="brand-mark" aria-hidden="true">
+            <Radar size={20} />
+          </span>
+          <span>InfoRadar</span>
+        </Link>
+        <div className="nav-actions">
+          <Link className="button button-ghost" href="/login">
+            登录
+          </Link>
+          <Link className="button button-dark" href="/register">
+            免费开始
+          </Link>
+        </div>
+      </nav>
+
+      <section className="hero-section">
+        <div className="hero-copy">
+          <div className="eyebrow">
+            <span className="eyebrow-dot" />
+            为长期关注而生的 AI 信息助手
+          </div>
+          <h1>让重要信息主动找到你</h1>
+          <p>
+            告诉 InfoRadar 你关心什么。它会持续扫描公开网页，理解内容、过滤噪声，
+            只把真正值得关注的变化交给你。
           </p>
+          <div className="hero-actions">
+            <Link className="button button-primary" href="/register">
+              开始创建雷达
+              <ArrowRight size={17} />
+            </Link>
+            <span className="hero-note">自带 DeepSeek API Key · 搜索额度由平台提供</span>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="radar-preview" aria-label="雷达运行状态预览">
+          <div className="preview-header">
+            <div>
+              <span className="preview-kicker">正在监控</span>
+              <h2>AI Agent 行业进展</h2>
+            </div>
+            <span className="status-pill">
+              <span />运行中
+            </span>
+          </div>
+          <div className="radar-visual" aria-hidden="true">
+            <span className="radar-ring radar-ring-one" />
+            <span className="radar-ring radar-ring-two" />
+            <span className="radar-ring radar-ring-three" />
+            <span className="radar-sweep" />
+            <span className="radar-blip radar-blip-one" />
+            <span className="radar-blip radar-blip-two" />
+          </div>
+          <div className="preview-stats">
+            <div><span>今日扫描</span><strong>4 次</strong></div>
+            <div><span>发现候选</span><strong>28 条</strong></div>
+            <div><span>值得关注</span><strong>3 条</strong></div>
+          </div>
+          <div className="preview-result">
+            <span className="result-score">92</span>
+            <div>
+              <strong>新的开源 Agent 框架发布</strong>
+              <p>与监控标准高度相关，包含可复现的多智能体协作方案。</p>
+            </div>
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section className="workflow-section" aria-labelledby="workflow-title">
+        <div className="section-heading">
+          <span>简单，但不是黑盒</span>
+          <h2 id="workflow-title">从一句话到长期监控</h2>
+        </div>
+        <div className="workflow-grid">
+          {steps.map((step, index) => {
+            const Icon = step.icon;
+            return (
+              <article className="workflow-card" key={step.title}>
+                <div className="workflow-icon"><Icon size={20} /></div>
+                <span className="workflow-index">0{index + 1}</span>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <footer className="landing-footer">
+        <span>© 2026 InfoRadar</span>
+        <span>持续关注，减少错过。</span>
+      </footer>
+    </main>
   );
 }
+
