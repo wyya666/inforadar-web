@@ -348,3 +348,25 @@ button:disabled { cursor: not-allowed; opacity: 0.62; }
   .dashboard-title p { margin-top: 15px; }
   .overview-grid { grid-template-columns: 1fr; }
 }
+.settings-heading { margin-bottom: 32px; }
+.settings-stack { display: grid; gap: 18px; }
+.settings-panel { padding: clamp(22px,3vw,32px); border: 1px solid var(--line); border-radius: 20px; background: rgba(255,255,255,.44); }
+.settings-panel-title { display: flex; justify-content: space-between; gap: 18px; align-items: flex-start; margin-bottom: 25px; }
+.settings-panel-title span, .danger-panel span { color: var(--signal); font-size: 11px; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
+.settings-panel-title h2, .danger-panel h2 { margin: 6px 0 0; font-size: 23px; letter-spacing: -.035em; }
+.settings-panel-title > p, .danger-panel p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+.settings-form { display: grid; gap: 18px; max-width: 660px; }
+.settings-form-grid { grid-template-columns: 1fr 1fr; }
+.settings-form label:not(.toggle-row) { display: grid; gap: 8px; color: #3b3935; font-size: 13px; font-weight: 650; }
+.settings-form input:not([type=checkbox]) { min-height: 48px; padding: 0 14px; border: 1px solid var(--line); border-radius: 11px; background: rgba(255,255,255,.55); outline: 0; }
+.settings-form input:focus { border-color: rgba(240,74,36,.6); box-shadow: 0 0 0 4px rgba(240,74,36,.09); }
+.toggle-row { display: flex; gap: 12px; align-items: flex-start; font-size: 13px; }
+.toggle-row input { width: 18px; height: 18px; accent-color: var(--signal); }
+.toggle-row span { display: grid; gap: 4px; }
+.toggle-row small { color: var(--muted); font-weight: 400; }
+.settings-action { justify-self: start; }
+.form-success { margin: 0; color: var(--green); font-size: 12px; font-weight: 650; }
+.settings-error { color: var(--signal); }
+.danger-panel { display: flex; align-items: center; justify-content: space-between; gap: 24px; border-color: rgba(180,50,28,.25); }
+.danger-button { border-color: rgba(180,50,28,.25); background: #fff0ec; color: #a52c17; }
+@media (max-width: 620px) { .settings-form-grid { grid-template-columns: 1fr; } .danger-panel { align-items: flex-start; flex-direction: column; } }
