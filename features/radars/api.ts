@@ -15,3 +15,15 @@ export async function generateRadarPlan(intent: string): Promise<RadarPlan> {
   if (error || !data) throw radarError(error, response);
   return data.plan;
 }
+
+export async function createRadar(input: {
+  name: string;
+  user_intent: string;
+  search_query: string;
+  relevance_criteria: string;
+  interval_minutes: 30 | 60 | 180 | 360 | 720 | 1440;
+}): Promise<Radar> {
+  const { data, error, response } = await apiClient.POST("/radars", { body: input });
+  if (error || !data) throw radarError(error, response);
+  return data.radar;
+}

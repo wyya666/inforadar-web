@@ -403,4 +403,11 @@ button:disabled { cursor: not-allowed; opacity: 0.62; }
 .plan-preview > div { padding: 17px; border: 1px solid var(--line); border-radius: 13px; background: rgba(255,255,255,.48); }
 .plan-preview > div > span { display: flex; gap: 6px; align-items: center; color: var(--muted); font-size: 11px; font-weight: 650; }
 .plan-preview p { margin: 8px 0 0; font-size: 14px; line-height: 1.7; }
+.plan-editor { display: grid; gap: 18px; }
+.plan-editor label { display: grid; gap: 8px; color: #3b3935; font-size: 13px; font-weight: 650; }
+.plan-editor label > span { display: flex; gap: 6px; align-items: center; }
+.plan-editor input, .plan-editor textarea, .plan-editor select { width: 100%; padding: 0 14px; border: 1px solid var(--line); border-radius: 11px; background: rgba(255,255,255,.58); outline: 0; }
+.plan-editor input, .plan-editor select { min-height: 48px; }.plan-editor textarea { padding-block: 13px; resize: vertical; line-height: 1.6; }
+.plan-editor input:focus, .plan-editor textarea:focus, .plan-editor select:focus { border-color: rgba(240,74,36,.6); box-shadow: 0 0 0 4px rgba(240,74,36,.09); }
+.plan-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 6px; }
 @media (max-width: 860px) { .creation-grid { grid-template-columns: 1fr; } .creation-aside { order: -1; } .creation-aside ol { grid-template-columns: repeat(3,1fr); } }
