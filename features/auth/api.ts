@@ -45,3 +45,20 @@ export async function verifyEmail(token: string): Promise<User> {
   if (error || !data) throw toApiError(error, response);
   return data.user;
 }
+
+export async function login(input: { email: string; password: string }): Promise<User> {
+  const { data, error, response } = await apiClient.POST("/auth/login", { body: input });
+  if (error || !data) throw toApiError(error, response);
+  return data.user;
+}
+
+export async function getCurrentUser(): Promise<User> {
+  const { data, error, response } = await apiClient.GET("/users/me");
+  if (error || !data) throw toApiError(error, response);
+  return data.user;
+}
+
+export async function logout(): Promise<void> {
+  const { error, response } = await apiClient.POST("/auth/logout");
+  if (error) throw toApiError(error, response);
+}
