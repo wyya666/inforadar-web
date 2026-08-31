@@ -26,3 +26,21 @@ export async function deleteAccount(): Promise<void> {
 }
 
 export type CredentialMetadata = components["schemas"]["CredentialMetadata"];
+
+export async function getDeepSeekCredential(): Promise<CredentialMetadata | null> {
+  const { data, error, response } = await apiClient.GET("/credentials/deepseek");
+  if (response.status === 404) return null;
+  if (error || !data) throw apiError(error, response);
+  return data.credential;
+}
+
+export async function setDeepSeekCredential(apiKey: string): Promise<CredentialMetadata> {
+  const { data, error, response } = await apiClient.PUT("/credentials/deepseek", { body: { api_key: apiKey } });
+  if (error || !data) throw apiError(error, response);
+  return data.credential;
+}
+
+export async function deleteDeepSeekCredential(): Promise<void> {
+  const { error, response } = await apiClient.DELETE("/credentials/deepseek");
+  if (error) throw apiError(error, response);
+}

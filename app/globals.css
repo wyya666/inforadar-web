@@ -350,6 +350,7 @@ button:disabled { cursor: not-allowed; opacity: 0.62; }
 }
 .settings-heading { margin-bottom: 32px; }
 .settings-stack { display: grid; gap: 18px; }
+.settings-stack .settings-stack { display: contents; }
 .settings-panel { padding: clamp(22px,3vw,32px); border: 1px solid var(--line); border-radius: 20px; background: rgba(255,255,255,.44); }
 .settings-panel-title { display: flex; justify-content: space-between; gap: 18px; align-items: flex-start; margin-bottom: 25px; }
 .settings-panel-title span, .danger-panel span { color: var(--signal); font-size: 11px; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
@@ -370,3 +371,13 @@ button:disabled { cursor: not-allowed; opacity: 0.62; }
 .danger-panel { display: flex; align-items: center; justify-content: space-between; gap: 24px; border-color: rgba(180,50,28,.25); }
 .danger-button { border-color: rgba(180,50,28,.25); background: #fff0ec; color: #a52c17; }
 @media (max-width: 620px) { .settings-form-grid { grid-template-columns: 1fr; } .danger-panel { align-items: flex-start; flex-direction: column; } }
+.settings-help { max-width: 720px; margin: -10px 0 24px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+.credential-summary { display: grid; grid-template-columns: auto repeat(3, minmax(100px,1fr)) auto; gap: 18px; align-items: center; margin-bottom: 24px; padding: 18px; border: 1px solid rgba(30,114,87,.2); border-radius: 15px; background: #eef6f1; }
+.credential-icon { color: var(--green); }
+.credential-summary > div:not(.credential-icon) { display: grid; gap: 4px; }
+.credential-summary span { color: var(--muted); font-size: 11px; }
+.credential-summary strong { font-size: 13px; }
+.icon-button { display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--muted); cursor: pointer; }
+.credential-form { max-width: 720px; grid-template-columns: minmax(0,1fr) auto; align-items: end; }
+.credential-form .form-error, .credential-form .form-success { grid-column: 1 / -1; }
+@media (max-width: 720px) { .credential-summary { grid-template-columns: auto 1fr auto; } .credential-summary > div:nth-of-type(3), .credential-summary > div:nth-of-type(4) { display: none; } .credential-form { grid-template-columns: 1fr; } }
