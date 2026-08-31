@@ -165,6 +165,91 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/radar-options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getRadarOptions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/radar-plans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["generateRadarPlan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/radars": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listRadars"];
+        put?: never;
+        post: operations["createRadar"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/radars/{radarID}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                radarID: string;
+            };
+            cookie?: never;
+        };
+        get: operations["getRadar"];
+        put?: never;
+        post?: never;
+        delete: operations["deleteRadar"];
+        options?: never;
+        head?: never;
+        patch: operations["updateRadar"];
+        trace?: never;
+    };
+    "/radars/{radarID}/{action}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                radarID: string;
+                action: "pause" | "resume" | "scan";
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["changeRadarStatusOrScan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -213,6 +298,40 @@ export interface components {
             /** Format: date-time */
             last_validated_at: string;
         };
+        RadarPlan: {
+            name: string;
+            search_query: string;
+            relevance_criteria: string;
+        };
+        CreateRadarRequest: components["schemas"]["RadarPlan"] & {
+            user_intent: string;
+            /** @enum {integer} */
+            interval_minutes: 30 | 60 | 180 | 360 | 720 | 1440;
+        };
+        UpdateRadarRequest: components["schemas"]["RadarPlan"] & {
+            /** @enum {integer} */
+            interval_minutes: 30 | 60 | 180 | 360 | 720 | 1440;
+            relevance_threshold: number;
+        };
+        Radar: {
+            id: string;
+            name: string;
+            user_intent: string;
+            search_query: string;
+            relevance_criteria: string;
+            interval_minutes: number;
+            relevance_threshold: number;
+            /** @enum {string} */
+            status: "active" | "paused";
+            /** Format: date-time */
+            next_scan_at: string;
+            /** Format: date-time */
+            last_scan_at?: string | null;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
         Error: {
             error: {
                 code: string;
@@ -229,6 +348,17 @@ export interface components {
             content: {
                 "application/json": {
                     user: components["schemas"]["User"];
+                };
+            };
+        };
+        /** @description Radar owned by the current user. */
+        RadarResponse: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    radar: components["schemas"]["Radar"];
                 };
             };
         };
@@ -598,6 +728,181 @@ export interface operations {
                 content?: never;
             };
             404: components["responses"]["NotFound"];
+        };
+    };
+    getRadarOptions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Supported intervals and product limits. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        interval_minutes: (30 | 60 | 180 | 360 | 720 | 1440)[];
+                        active_radar_limit: number;
+                        manual_scan_cooldown_seconds: number;
+                        default_relevance_threshold: number;
+                    };
+                };
+            };
+        };
+    };
+    generateRadarPlan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    intent: string;
+                };
+            };
+        };
+        responses: {
+            /** @description AI-generated plan ready for user confirmation. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        plan: components["schemas"]["RadarPlan"];
+                    };
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            422: components["responses"]["ProviderUnavailable"];
+        };
+    };
+    listRadars: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Radars owned by the current user. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        radars: components["schemas"]["Radar"][];
+                    };
+                };
+            };
+        };
+    };
+    createRadar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateRadarRequest"];
+            };
+        };
+        responses: {
+            201: components["responses"]["RadarResponse"];
+            400: components["responses"]["BadRequest"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    getRadar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                radarID: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: components["responses"]["RadarResponse"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    deleteRadar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                radarID: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Radar deleted. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateRadar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                radarID: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateRadarRequest"];
+            };
+        };
+        responses: {
+            200: components["responses"]["RadarResponse"];
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    changeRadarStatusOrScan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                radarID: string;
+                action: "pause" | "resume" | "scan";
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: components["responses"]["RadarResponse"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            /** @description Manual scan cooldown is active. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
     };
 }
