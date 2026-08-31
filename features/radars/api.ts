@@ -27,3 +27,22 @@ export async function createRadar(input: {
   if (error || !data) throw radarError(error, response);
   return data.radar;
 }
+
+export async function listRadars(): Promise<Radar[]> {
+  const { data, error, response } = await apiClient.GET("/radars");
+  if (error || !data) throw radarError(error, response);
+  return data.radars;
+}
+
+export async function runRadarAction(id: string, action: "pause" | "resume" | "scan"): Promise<Radar> {
+  const { data, error, response } = await apiClient.POST("/radars/{radarID}/{action}", {
+    params: { path: { radarID: id, action } },
+  });
+  if (error || !data) throw radarError(error, response);
+  return data.radar;
+}
+
+export async function deleteRadar(id: string): Promise<void> {
+  const { error, response } = await apiClient.DELETE("/radars/{radarID}", { params: { path: { radarID: id } } });
+  if (error) throw radarError(error, response);
+}
