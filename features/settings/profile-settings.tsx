@@ -61,7 +61,8 @@ function ProfileForm({ user }: { user: Awaited<ReturnType<typeof getCurrentUser>
       <div className="settings-panel-title"><div><span>个人资料</span><h2>账户信息</h2></div><p>{user.email}</p></div>
       <form className="settings-form" onSubmit={submitProfile}>
         <label><span>昵称</span><input value={displayName} onChange={(event) => setDisplayName(event.target.value)} /></label>
-        <label className="toggle-row"><input aria-label="接收每日摘要" type="checkbox" checked={digestEnabled} onChange={(event) => setDigestEnabled(event.target.checked)} /><span><strong>接收每日摘要</strong><small>每天北京时间 09:00 汇总新的命中结果。</small></span></label>
+        <label className="toggle-row"><input aria-label="接收每日摘要" type="checkbox" checked={digestEnabled} onChange={(event) => setDigestEnabled(event.target.checked)} /><span><strong>接收每日摘要</strong><small>每天北京时间 09:00 汇总新的命中结果；没有新命中则不发送。</small></span></label>
+        <div className="digest-rules"><span>每封最多 20 条</span><span>同一结果只汇总一次</span><span>验证与安全邮件始终开启</span></div>
         {profileMutation.isError ? <p className="form-error">资料保存失败</p> : null}
         {saved ? <p className="form-success" role="status">资料已保存</p> : null}
         <button className="button button-dark settings-action" disabled={profileMutation.isPending} type="submit"><Save size={16} />保存资料</button>

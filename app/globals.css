@@ -366,6 +366,7 @@ button:disabled { cursor: not-allowed; opacity: 0.62; }
 .toggle-row input { width: 18px; height: 18px; accent-color: var(--signal); }
 .toggle-row span { display: grid; gap: 4px; }
 .toggle-row small { color: var(--muted); font-weight: 400; }
+.digest-rules { display: flex; flex-wrap: wrap; gap: 7px; margin-top: -7px; }.digest-rules span { padding: 5px 8px; border-radius: 999px; background: #eee9df; color: var(--muted); font-size: 10px; }
 .settings-action { justify-self: start; }
 .form-success { margin: 0; color: var(--green); font-size: 12px; font-weight: 650; }
 .settings-error { color: var(--signal); }

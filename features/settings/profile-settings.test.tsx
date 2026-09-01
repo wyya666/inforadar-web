@@ -35,6 +35,7 @@ describe("ProfileSettings", () => {
     render(<QueryClientProvider client={queryClient}><ProfileSettings /></QueryClientProvider>);
 
     const name = await screen.findByLabelText("昵称");
+    expect(screen.getByText("同一结果只汇总一次")).toBeInTheDocument();
     await actor.clear(name);
     await actor.type(name, "New Name");
     await actor.click(screen.getByLabelText("接收每日摘要"));
