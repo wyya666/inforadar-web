@@ -440,3 +440,5 @@ button:disabled { cursor: not-allowed; opacity: 0.62; }
 .usage-progress { height: 5px; overflow: hidden; border-radius: 999px; background: #ded8cd; }.usage-progress span { display: block; height: 100%; border-radius: inherit; background: var(--green); }
 .usage-indicator p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.5; }.usage-exhausted { border-color: rgba(240,74,36,.35); background: #fff0ec; }.usage-exhausted .usage-progress span { background: var(--signal); }
 .usage-loading, .usage-error { color: var(--muted); font-size: 11px; }.usage-error { color: var(--signal); }
+.quota-empty { display: flex; gap: 15px; align-items: flex-start; padding: 26px; border: 1px solid rgba(240,74,36,.3); border-radius: 18px; background: #fff0ec; color: var(--signal); }
+.quota-empty h2 { margin: 0 0 7px; color: var(--ink); font-size: 20px; }.quota-empty p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }

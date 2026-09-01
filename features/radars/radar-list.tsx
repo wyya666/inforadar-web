@@ -4,6 +4,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Clock3, Pause, Play, Plus, Radar as RadarIcon, RefreshCw, Search, Trash2 } from "lucide-react";
 import Link from "next/link";
 
+import { getUsage } from "@/features/usage/api";
+import { usageKey } from "@/features/usage/usage-indicator";
 import { deleteRadar, listRadars, runRadarAction, type Radar } from "./api";
 import { ScanHistory } from "./scan-history";
 
@@ -17,6 +19,7 @@ function intervalLabel(minutes: number) {
 export function RadarList() {
   const client = useQueryClient();
   const query = useQuery({ queryKey: radarKey, queryFn: listRadars });
+  const usage = useQuery({ queryKey: usageKey, queryFn: getUsage });
   const action = useMutation({
     mutationFn: ({ id, operation }: { id: string; operation: "pause" | "resume" | "scan" }) => runRadarAction(id, operation),
     onSuccess(updated) { client.setQueryData<Radar[]>(radarKey, (current = []) => current.map((item) => item.id === updated.id ? updated : item)); },
@@ -34,7 +37,7 @@ export function RadarList() {
     {query.data.map((item) => <article className="radar-card" key={item.id}>
       <div className="radar-card-head"><div><span className={`radar-state state-${item.status}`}>{item.status === "active" ? "运行中" : "已暂停"}</span><h2>{item.name}</h2></div><div className="radar-actions">
         <button aria-label={item.status === "active" ? "暂停雷达" : "恢复雷达"} disabled={action.isPending} onClick={() => action.mutate({ id: item.id, operation: item.status === "active" ? "pause" : "resume" })} type="button">{item.status === "active" ? <Pause size={16} /> : <Play size={16} />}</button>
-        <button aria-label="立即扫描" disabled={action.isPending || item.status !== "active"} onClick={() => action.mutate({ id: item.id, operation: "scan" })} type="button"><RefreshCw size={16} /></button>
+        <button aria-label="立即扫描" disabled={action.isPending || item.status !== "active" || usage.data?.remaining === 0} onClick={() => action.mutate({ id: item.id, operation: "scan" })} title={usage.data?.remaining === 0 ? "本月额度已用完" : undefined} type="button"><RefreshCw size={16} /></button>
         <button aria-label="删除雷达" disabled={remove.isPending} onClick={() => { if (window.confirm("确定删除这个雷达和历史结果吗？")) remove.mutate(item.id); }} type="button"><Trash2 size={16} /></button>
       </div></div>
       <p className="radar-intent">{item.user_intent}</p>
@@ -43,5 +46,6 @@ export function RadarList() {
       <ScanHistory radarID={item.id} />
     </article>)}
     {action.isError ? <p className="form-error">操作失败，手动扫描可能仍在冷却期。</p> : null}
+    {usage.data?.remaining === 0 ? <p className="form-error">本月搜索额度已用完，自动和手动扫描已暂停。</p> : null}
   </div>;
 }
