@@ -25,6 +25,7 @@ export function ResultTimeline() {
   const items = query.data?.pages.flatMap((page) => page.items) ?? [];
 
   return <>
+    <p className="result-provenance"><Sparkles size={14} />AI 摘要仅基于搜索服务返回的标题与摘要，不代表原文；请通过“查看原文”核验。</p>
     <div className="result-filters">
       <label>雷达<select aria-label="按雷达筛选" value={radarID} onChange={(event) => setRadarID(event.target.value)}><option value="">全部雷达</option>{radars.data?.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
       <label className="result-unread-filter"><input checked={unread} onChange={(event) => setUnread(event.target.checked)} type="checkbox" />只看未读</label>

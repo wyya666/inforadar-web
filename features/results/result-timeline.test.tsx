@@ -18,6 +18,8 @@ describe("ResultTimeline", () => {
     render(<QueryClientProvider client={client}><ResultTimeline /></QueryClientProvider>);
     expect(await screen.findByText("AI Agent 发布")).toBeInTheDocument();
     expect(screen.getByText("AI 摘要")).toBeInTheDocument();
+    expect(screen.getByText("来源未提供")).toBeInTheDocument();
+    expect(screen.getByText("发布时间未知")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "查看原文" })).toHaveAttribute("href", "https://example.com/news");
   });
 

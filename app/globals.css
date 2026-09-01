@@ -443,6 +443,7 @@ button:disabled { cursor: not-allowed; opacity: 0.62; }
 .quota-empty { display: flex; gap: 15px; align-items: flex-start; padding: 26px; border: 1px solid rgba(240,74,36,.3); border-radius: 18px; background: #fff0ec; color: var(--signal); }
 .quota-empty h2 { margin: 0 0 7px; color: var(--ink); font-size: 20px; }.quota-empty p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
 .result-timeline { display: grid; gap: 14px; }
+.result-provenance { display: flex; gap: 7px; align-items: center; margin: 0 0 12px; color: var(--muted); font-size: 11px; line-height: 1.5; }
 .result-filters { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; margin-bottom: 18px; padding: 15px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.4); }
 .result-filters > label:not(.result-unread-filter) { display: grid; gap: 5px; color: var(--muted); font-size: 10px; font-weight: 650; }.result-filters select { min-width: 180px; height: 38px; padding: 0 10px; border: 1px solid var(--line); border-radius: 9px; background: #f8f5ee; }
 .result-unread-filter { display: flex; gap: 7px; align-items: center; min-height: 38px; color: var(--muted); font-size: 11px; }.result-unread-filter input { accent-color: var(--signal); }.result-filters .button { min-height: 38px; margin-left: auto; }
