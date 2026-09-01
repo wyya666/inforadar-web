@@ -19,5 +19,8 @@ describe("Home", () => {
       "href",
       "/login",
     );
+    expect(
+      screen.getByRole("heading", { name: "清楚知道雷达做了什么" }),
+    ).toBeInTheDocument();
   });
 });

@@ -1,4 +1,13 @@
-import { ArrowRight, BellRing, Radar, Search, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  BellRing,
+  ExternalLink,
+  KeyRound,
+  Radar,
+  Search,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 import Link from "next/link";
 
 const steps = [
@@ -112,6 +121,42 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="trust-section" aria-labelledby="trust-title">
+        <div className="section-heading">
+          <span>边界透明</span>
+          <h2 id="trust-title">清楚知道雷达做了什么</h2>
+        </div>
+        <div className="trust-grid">
+          <article>
+            <KeyRound size={22} />
+            <div>
+              <h3>你的模型密钥</h3>
+              <p>DeepSeek API Key 加密保存，只在执行你的分析任务时解密使用。</p>
+            </div>
+          </article>
+          <article>
+            <Search size={22} />
+            <div>
+              <h3>只处理搜索摘要</h3>
+              <p>首版只读取搜索结果中的标题、链接、时间和摘要，不抓取网页正文。</p>
+            </div>
+          </article>
+          <article>
+            <ShieldCheck size={22} />
+            <div>
+              <h3>保留原始来源</h3>
+              <p>AI 摘要会明确标识，原文链接始终可见，方便你独立核验。</p>
+            </div>
+          </article>
+        </div>
+        <div className="trust-cta">
+          <p>每月包含 100 次搜索额度，最多运行 3 个雷达。公开 Beta 期间规则可能调整。</p>
+          <Link href="/register">
+            建立第一个雷达 <ExternalLink size={15} />
+          </Link>
+        </div>
+      </section>
+
       <footer className="landing-footer">
         <span>© 2026 InfoRadar</span>
         <span>持续关注，减少错过。</span>
@@ -119,4 +164,3 @@ export default function Home() {
     </main>
   );
 }
-

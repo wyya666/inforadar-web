@@ -30,7 +30,7 @@ button:disabled { cursor: not-allowed; opacity: 0.62; }
     linear-gradient(180deg, #f8f5ee 0%, var(--paper) 62%, #eee8dc 100%);
 }
 
-.landing-nav, .hero-section, .workflow-section, .landing-footer {
+.landing-nav, .hero-section, .workflow-section, .trust-section, .landing-footer {
   width: min(1180px, calc(100% - 40px));
   margin-inline: auto;
 }
@@ -248,6 +248,15 @@ button:disabled { cursor: not-allowed; opacity: 0.62; }
 }
 .workflow-card h3 { margin: 48px 0 10px; font-size: 19px; }
 .workflow-card p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
+.trust-section { padding: 84px 0 96px; border-top: 1px solid var(--line); }
+.trust-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.trust-grid article { display: flex; gap: 16px; min-height: 160px; padding: 24px; border: 1px solid var(--line); border-radius: 18px; background: #191a18; color: white; }
+.trust-grid article > svg { flex: 0 0 auto; color: #ff7656; }
+.trust-grid h3 { margin: 1px 0 9px; font-size: 16px; }
+.trust-grid p { margin: 0; color: rgba(255,255,255,.61); font-size: 12px; line-height: 1.7; }
+.trust-cta { display: flex; justify-content: space-between; gap: 24px; align-items: center; margin-top: 14px; padding: 19px 22px; border: 1px solid var(--line); border-radius: 15px; background: rgba(255,255,255,.38); }
+.trust-cta p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.trust-cta a { display: inline-flex; flex: 0 0 auto; gap: 6px; align-items: center; color: var(--signal); font-size: 12px; font-weight: 750; }
 .landing-footer {
   display: flex;
   justify-content: space-between;
@@ -263,11 +272,13 @@ button:disabled { cursor: not-allowed; opacity: 0.62; }
   .radar-preview { width: min(520px, 100%); }
 }
 @media (max-width: 680px) {
-  .landing-nav, .hero-section, .workflow-section, .landing-footer { width: min(100% - 28px, 1180px); }
+  .landing-nav, .hero-section, .workflow-section, .trust-section, .landing-footer { width: min(100% - 28px, 1180px); }
   .landing-nav { height: 70px; }
   .nav-actions .button-ghost { display: none; }
   .hero-copy h1 { font-size: 48px; }
   .workflow-grid { grid-template-columns: 1fr; }
+  .trust-grid { grid-template-columns: 1fr; }
+  .trust-cta { align-items: flex-start; flex-direction: column; }
   .landing-footer { gap: 10px; flex-direction: column; }
 }
 
