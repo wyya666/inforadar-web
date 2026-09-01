@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# InfoRadar Web
 
-## Getting Started
+InfoRadar 的 Next.js 用户端与管理员端，包括注册登录、雷达、结果时间线、
+额度、设置和运营管理页面。
 
-First, run the development server:
+## Local development
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
+```powershell
+Copy-Item .env.example .env.local
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+默认页面地址为 <http://localhost:3000>。`.env.example` 使用同源
+`/api/v1`；如果 API 在本地 `8080` 端口独立运行，可在 `.env.local` 中设置：
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api/v1
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+浏览器鉴权使用 Server 设置的 HttpOnly JWT Cookie；Web 不把 Access 或
+Refresh JWT 写入 localStorage。非安全写请求会附带 CSRF Cookie 对应的请求头。
 
-## Learn More
+## Verification
 
-To learn more about Next.js, take a look at the following resources:
+```powershell
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm exec playwright test
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+OpenAPI 由相邻的 `inforadar-server` 仓库维护。Server 契约变更合并后运行：
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```powershell
+pnpm generate:api
+```
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+提交生成后的 `lib/api/generated/schema.ts`。发布与回滚流程见
+[`docs/RELEASE.md`](docs/RELEASE.md)。
