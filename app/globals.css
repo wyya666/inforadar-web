@@ -265,6 +265,8 @@ button:disabled { cursor: not-allowed; opacity: 0.62; }
   color: var(--muted);
   font-size: 12px;
 }
+.landing-footer > div { display: flex; gap: 18px; align-items: center; }
+.landing-footer a:hover { color: var(--ink); }
 
 @media (max-width: 900px) {
   .hero-section { grid-template-columns: 1fr; padding-block: 72px 88px; }
@@ -280,7 +282,19 @@ button:disabled { cursor: not-allowed; opacity: 0.62; }
   .trust-grid { grid-template-columns: 1fr; }
   .trust-cta { align-items: flex-start; flex-direction: column; }
   .landing-footer { gap: 10px; flex-direction: column; }
+  .landing-footer > div { flex-wrap: wrap; gap: 10px 16px; }
 }
+
+.legal-shell { min-height: 100vh; background: linear-gradient(180deg,#f8f5ee,var(--paper)); }
+.legal-header { position: sticky; top: 0; z-index: 2; display: flex; width: min(860px,calc(100% - 40px)); height: 78px; align-items: center; justify-content: space-between; margin-inline: auto; border-bottom: 1px solid var(--line); background: rgba(248,245,238,.88); backdrop-filter: blur(14px); }
+.legal-document { width: min(760px,calc(100% - 40px)); margin-inline: auto; padding: 76px 0 110px; }
+.legal-kicker { color: var(--signal); font-size: 11px; font-weight: 750; letter-spacing: .08em; }
+.legal-document h1 { margin: 14px 0 22px; font-size: clamp(46px,8vw,76px); letter-spacing: -.065em; line-height: 1; }
+.legal-lead { margin-bottom: 58px !important; padding: 20px; border-left: 3px solid var(--signal); background: rgba(255,255,255,.42); color: #4d4942 !important; }
+.legal-document section { padding: 34px 0; border-top: 1px solid var(--line); }
+.legal-document h2 { margin: 0 0 18px; font-size: 22px; letter-spacing: -.03em; }
+.legal-document p { margin: 0 0 13px; color: var(--muted); font-size: 14px; line-height: 1.9; }
+.legal-document section p:last-child { margin-bottom: 0; }
 
 .auth-shell { min-height: 100vh; display: grid; grid-template-columns: minmax(360px, .82fr) minmax(480px, 1.18fr); background: #f8f5ee; }
 .auth-aside { min-height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 42px clamp(30px, 5vw, 72px); background: var(--ink); color: white; }

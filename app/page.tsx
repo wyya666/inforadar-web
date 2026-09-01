@@ -159,7 +159,11 @@ export default function Home() {
 
       <footer className="landing-footer">
         <span>© 2026 InfoRadar</span>
-        <span>持续关注，减少错过。</span>
+        <div>
+          <Link href="/privacy">隐私政策</Link>
+          <Link href="/terms">服务条款</Link>
+          <span>持续关注，减少错过。</span>
+        </div>
       </footer>
     </main>
   );

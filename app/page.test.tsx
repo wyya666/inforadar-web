@@ -22,5 +22,9 @@ describe("Home", () => {
     expect(
       screen.getByRole("heading", { name: "清楚知道雷达做了什么" }),
     ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "隐私政策" })).toHaveAttribute(
+      "href",
+      "/privacy",
+    );
   });
 });
