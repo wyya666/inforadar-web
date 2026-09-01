@@ -1,4 +1,4 @@
-import { Gauge, Radar, Settings, Sparkles } from "lucide-react";
+import { Gauge, Inbox, Radar, Settings, Sparkles } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -7,6 +7,7 @@ import { SessionSummary } from "@/features/auth/session-summary";
 const navigation = [
   { href: "/dashboard", label: "概览", icon: Gauge },
   { href: "/radars", label: "我的雷达", icon: Radar },
+  { href: "/results", label: "结果", icon: Inbox },
   { href: "/settings", label: "设置", icon: Settings },
 ];
 

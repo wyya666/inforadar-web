@@ -302,6 +302,72 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/results": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listResults"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/results/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getResultSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/results/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["markAllResultsRead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/results/{resultID}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                resultID: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["markResultRead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -421,6 +487,28 @@ export interface components {
             monthly_limit: number;
             /** Format: date-time */
             reset_at: string;
+        };
+        Result: {
+            id: string;
+            radar_id: string;
+            scan_run_id: string;
+            title: string;
+            /** Format: uri */
+            url: string;
+            /** Format: date-time */
+            published_at?: string | null;
+            source?: string;
+            provider_snippet?: string;
+            /** @description AI summary based only on provider metadata and snippet. */
+            summary: string;
+            relevance_reason: string;
+            relevance_score: number;
+            is_relevant: boolean;
+            is_read: boolean;
+            /** Format: date-time */
+            digest_sent_at?: string | null;
+            /** Format: date-time */
+            created_at: string;
         };
         Error: {
             error: {
@@ -1067,6 +1155,100 @@ export interface operations {
                 };
             };
             503: components["responses"]["ProviderUnavailable"];
+        };
+    };
+    listResults: {
+        parameters: {
+            query?: {
+                radar_id?: string;
+                unread?: boolean;
+                cursor?: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Cursor-paginated relevant results owned by the current user. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: components["schemas"]["Result"][];
+                        next_cursor?: string;
+                    };
+                };
+            };
+            400: components["responses"]["BadRequest"];
+        };
+    };
+    getResultSummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Unread result count. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        unread: number;
+                    };
+                };
+            };
+        };
+    };
+    markAllResultsRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description All owned results marked read. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        updated: number;
+                    };
+                };
+            };
+        };
+    };
+    markResultRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                resultID: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Owned result marked read. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            404: components["responses"]["NotFound"];
         };
     };
 }
