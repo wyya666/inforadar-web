@@ -28,7 +28,7 @@ const radar = {
 };
 
 async function mockApi(page: Page) {
-  await page.route("http://localhost:8080/api/v1/**", async (route) => {
+  await page.route("**/api/v1/**", async (route) => {
     const request = route.request();
     const url = new URL(request.url());
     const headers = {

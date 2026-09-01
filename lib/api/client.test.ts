@@ -17,6 +17,7 @@ describe("API client", () => {
 
     const request = fetchMock.mock.calls[0]?.[0] as Request;
     expect(request.credentials).toBe("include");
+    expect(request.url).toBe("http://localhost:3000/api/v1/auth/logout");
     expect(request.headers.get("X-CSRF-Token")).toBe("csrf-token");
   });
 

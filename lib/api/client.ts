@@ -2,8 +2,10 @@ import createClient, { type Middleware } from "openapi-fetch";
 
 import type { paths } from "./generated/schema";
 
+const browserOrigin =
+  typeof window === "undefined" ? "http://localhost:8080" : window.location.origin;
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/api/v1";
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? new URL("/api/v1", browserOrigin).toString();
 
 const publicAuthPaths = new Set([
   "/auth/register",
