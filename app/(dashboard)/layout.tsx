@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { SessionSummary } from "@/features/auth/session-summary";
+import { AdminNavigationLink } from "@/features/admin/admin-access";
 
 const navigation = [
   { href: "/dashboard", label: "概览", icon: Gauge },
@@ -18,6 +19,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <Link className="brand dashboard-brand" href="/dashboard"><span className="brand-mark"><Radar size={20} /></span><span>InfoRadar</span></Link>
         <nav aria-label="应用导航">
           {navigation.map(({ href, label, icon: Icon }) => <Link href={href} key={href}><Icon size={18} />{label}</Link>)}
+          <AdminNavigationLink />
         </nav>
         <div className="sidebar-foot"><SessionSummary /></div>
       </aside>
