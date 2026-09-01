@@ -434,3 +434,9 @@ button:disabled { cursor: not-allowed; opacity: 0.62; }
 .scan-run > div { display: grid; gap: 3px; }.scan-run > div:last-of-type { text-align: right; }
 .scan-run strong { color: var(--ink); font-size: 11px; }.scan-run span, .scan-run small { color: var(--muted); font-size: 10px; }
 .scan-run-failed { color: var(--signal); }.scan-run small { grid-column: 2 / -1; }
+.usage-indicator { display: grid; gap: 9px; margin-bottom: 18px; padding: 15px 17px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.42); }
+.usage-indicator-head, .usage-indicator-head span { display: flex; align-items: center; }.usage-indicator-head { justify-content: space-between; gap: 16px; }
+.usage-indicator-head span { gap: 7px; color: var(--muted); font-size: 11px; font-weight: 650; }.usage-indicator-head strong { font-size: 13px; }
+.usage-progress { height: 5px; overflow: hidden; border-radius: 999px; background: #ded8cd; }.usage-progress span { display: block; height: 100%; border-radius: inherit; background: var(--green); }
+.usage-indicator p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.5; }.usage-exhausted { border-color: rgba(240,74,36,.35); background: #fff0ec; }.usage-exhausted .usage-progress span { background: var(--signal); }
+.usage-loading, .usage-error { color: var(--muted); font-size: 11px; }.usage-error { color: var(--signal); }

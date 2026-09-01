@@ -1066,6 +1066,7 @@ export interface operations {
                     };
                 };
             };
+            503: components["responses"]["ProviderUnavailable"];
         };
     };
 }
