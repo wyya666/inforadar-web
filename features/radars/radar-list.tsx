@@ -5,6 +5,7 @@ import { Clock3, Pause, Play, Plus, Radar as RadarIcon, RefreshCw, Search, Trash
 import Link from "next/link";
 
 import { deleteRadar, listRadars, runRadarAction, type Radar } from "./api";
+import { ScanHistory } from "./scan-history";
 
 const radarKey = ["radars"] as const;
 
@@ -39,6 +40,7 @@ export function RadarList() {
       <p className="radar-intent">{item.user_intent}</p>
       <div className="radar-query"><Search size={15} /><span>{item.search_query}</span></div>
       <footer><span><Clock3 size={14} />每 {intervalLabel(item.interval_minutes)}</span><span>相关性 ≥ {item.relevance_threshold}</span><span>下次：{item.status === "active" ? new Date(item.next_scan_at).toLocaleString("zh-CN") : "—"}</span></footer>
+      <ScanHistory radarID={item.id} />
     </article>)}
     {action.isError ? <p className="form-error">操作失败，手动扫描可能仍在冷却期。</p> : null}
   </div>;

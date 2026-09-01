@@ -250,6 +250,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/radars/{radarID}/runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                radarID: string;
+            };
+            cookie?: never;
+        };
+        get: operations["listRadarScanRuns"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/scan-runs/{runID}/attempts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                runID: string;
+            };
+            cookie?: never;
+        };
+        get: operations["listScanAttempts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/usage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getUsage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -331,6 +383,44 @@ export interface components {
             created_at: string;
             /** Format: date-time */
             updated_at: string;
+        };
+        ScanRun: {
+            id: string;
+            radar_id: string;
+            /** @enum {string} */
+            status: "queued" | "running" | "succeeded" | "failed";
+            attempt: number;
+            search_count: number;
+            matched_count: number;
+            error_code?: string;
+            error_message?: string;
+            /** Format: date-time */
+            started_at?: string | null;
+            /** Format: date-time */
+            finished_at?: string | null;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        ScanAttempt: {
+            id: string;
+            scan_run_id: string;
+            attempt: number;
+            /** @enum {string} */
+            status: "running" | "succeeded" | "failed";
+            error_code?: string;
+            error_message?: string;
+            /** Format: date-time */
+            started_at: string;
+            /** Format: date-time */
+            finished_at?: string | null;
+        };
+        Usage: {
+            remaining: number;
+            monthly_limit: number;
+            /** Format: date-time */
+            reset_at: string;
         };
         Error: {
             error: {
@@ -902,6 +992,79 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    listRadarScanRuns: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                radarID: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Recent scan runs owned by the current user. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        runs: components["schemas"]["ScanRun"][];
+                    };
+                };
+            };
+        };
+    };
+    listScanAttempts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                runID: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Retry history for an owned scan run. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        attempts: components["schemas"]["ScanAttempt"][];
+                    };
+                };
+            };
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getUsage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current monthly search credit balance. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        usage: components["schemas"]["Usage"];
+                    };
+                };
             };
         };
     };

@@ -4,6 +4,8 @@ import { ApiError } from "@/features/auth/api";
 
 export type RadarPlan = components["schemas"]["RadarPlan"];
 export type Radar = components["schemas"]["Radar"];
+export type ScanRun = components["schemas"]["ScanRun"];
+export type ScanAttempt = components["schemas"]["ScanAttempt"];
 
 function radarError(error: unknown, response: Response) {
   const body = error as { error?: { code?: string; message?: string } } | undefined;
@@ -45,4 +47,20 @@ export async function runRadarAction(id: string, action: "pause" | "resume" | "s
 export async function deleteRadar(id: string): Promise<void> {
   const { error, response } = await apiClient.DELETE("/radars/{radarID}", { params: { path: { radarID: id } } });
   if (error) throw radarError(error, response);
+}
+
+export async function listScanRuns(radarID: string): Promise<ScanRun[]> {
+  const { data, error, response } = await apiClient.GET("/radars/{radarID}/runs", {
+    params: { path: { radarID }, query: { limit: 10 } },
+  });
+  if (error || !data) throw radarError(error, response);
+  return data.runs;
+}
+
+export async function listScanAttempts(runID: string): Promise<ScanAttempt[]> {
+  const { data, error, response } = await apiClient.GET("/scan-runs/{runID}/attempts", {
+    params: { path: { runID } },
+  });
+  if (error || !data) throw radarError(error, response);
+  return data.attempts;
 }
