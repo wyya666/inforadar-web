@@ -35,6 +35,26 @@ describe("API client", () => {
     expect(result.response.status).toBe(200);
   });
 
+  it("replays an unsafe request with the CSRF token rotated by refresh", async () => {
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(new Response(JSON.stringify({ error: { code: "invalid_token", message: "expired" } }), { status: 401, headers: { "Content-Type": "application/json" } }))
+      .mockImplementationOnce(async () => {
+        document.cookie = "inforadar_csrf=rotated-token; path=/";
+        return new Response(null, { status: 204 });
+      })
+      .mockResolvedValueOnce(new Response(null, { status: 204 }));
+
+    const result = await apiClient.POST("/auth/logout");
+
+    expect(result.response.status).toBe(204);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    const original = fetchMock.mock.calls[0]?.[0] as Request;
+    const replayed = fetchMock.mock.calls[2]?.[0] as Request;
+    expect(original.headers.get("X-CSRF-Token")).toBe("csrf-token");
+    expect(replayed.headers.get("X-CSRF-Token")).toBe("rotated-token");
+  });
+
   it("reads URL-encoded CSRF cookie values", () => {
     document.cookie = "inforadar_csrf=a%20b; path=/";
     expect(getCsrfToken()).toBe("a b");

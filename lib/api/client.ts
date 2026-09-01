@@ -77,7 +77,7 @@ const sessionMiddleware: Middleware = {
       refreshPromise = undefined;
     });
     if (!(await refreshPromise)) return response;
-    return globalThis.fetch(retryRequest);
+    return globalThis.fetch(withCsrfHeader(retryRequest));
   },
   onError({ id, error }) {
     retryRequests.delete(id);
