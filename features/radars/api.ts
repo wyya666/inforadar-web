@@ -6,6 +6,13 @@ export type RadarPlan = components["schemas"]["RadarPlan"];
 export type Radar = components["schemas"]["Radar"];
 export type ScanRun = components["schemas"]["ScanRun"];
 export type ScanAttempt = components["schemas"]["ScanAttempt"];
+export type UpdateRadarInput = {
+  name: string;
+  search_query: string;
+  relevance_criteria: string;
+  interval_minutes: 30 | 60 | 180 | 360 | 720 | 1440;
+  relevance_threshold: number;
+};
 
 function radarError(error: unknown, response: Response) {
   const body = error as { error?: { code?: string; message?: string } } | undefined;
@@ -34,6 +41,15 @@ export async function listRadars(): Promise<Radar[]> {
   const { data, error, response } = await apiClient.GET("/radars");
   if (error || !data) throw radarError(error, response);
   return data.radars;
+}
+
+export async function updateRadar(id: string, input: UpdateRadarInput): Promise<Radar> {
+  const { data, error, response } = await apiClient.PATCH("/radars/{radarID}", {
+    params: { path: { radarID: id } },
+    body: input,
+  });
+  if (error || !data) throw radarError(error, response);
+  return data.radar;
 }
 
 export async function runRadarAction(id: string, action: "pause" | "resume" | "scan"): Promise<Radar> {
