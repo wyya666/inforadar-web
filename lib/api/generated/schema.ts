@@ -579,7 +579,7 @@ export interface components {
         };
         CredentialMetadata: {
             /** @enum {string} */
-            provider: "deepseek" | "zhipu" | "tavily";
+            provider: "deepseek" | "zhipu" | "tavily" | "baidu";
             masked_key: string;
             /** @enum {string} */
             status: "valid" | "invalid" | "insufficient_balance";
@@ -589,7 +589,7 @@ export interface components {
             last_validated_at: string;
         };
         /** @enum {string} */
-        SearchProvider: "zhipu" | "tavily";
+        SearchProvider: "zhipu" | "tavily" | "baidu";
         SearchCredentialMetadata: {
             provider: components["schemas"]["SearchProvider"];
             /** @description Masked suffix only; the API key is never returned. */
@@ -602,6 +602,7 @@ export interface components {
         SearchCredentials: {
             zhipu: components["schemas"]["SearchCredentialMetadata"] | null;
             tavily: components["schemas"]["SearchCredentialMetadata"] | null;
+            baidu: components["schemas"]["SearchCredentialMetadata"] | null;
         };
         SearchSettings: {
             active_provider: components["schemas"]["SearchProvider"] | null;
@@ -859,7 +860,7 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Registration accepted; email verification is required. */
+            /** @description Registration accepted; the account can log in immediately. */
             201: {
                 headers: {
                     [name: string]: unknown;

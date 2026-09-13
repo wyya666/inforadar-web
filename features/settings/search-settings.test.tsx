@@ -14,8 +14,9 @@ vi.mock("./api", async (importOriginal) => {
 
 const zhipu = { provider: "zhipu" as const, masked_key: "••••1234", status: "valid" as const, last_validated_at: "2026-09-01T03:00:00Z" };
 const tavily = { provider: "tavily" as const, masked_key: "••••5678", status: "valid" as const, last_validated_at: "2026-09-02T03:00:00Z" };
+const baidu = { provider: "baidu" as const, masked_key: "••••9012", status: "valid" as const, last_validated_at: "2026-09-03T03:00:00Z" };
 
-function renderSettings(initial: SearchSettingsValue = { active_provider: null, credentials: { zhipu: null, tavily: null } }) {
+function renderSettings(initial: SearchSettingsValue = { active_provider: null, credentials: { zhipu: null, tavily: null, baidu: null } }) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity }, mutations: { retry: false } } });
   client.setQueryData(searchSettingsKey, initial);
   render(<QueryClientProvider client={client}><SearchSettings /></QueryClientProvider>);
@@ -23,19 +24,20 @@ function renderSettings(initial: SearchSettingsValue = { active_provider: null, 
 
 describe("SearchSettings", () => {
   beforeEach(() => {
-    vi.mocked(getSearchSettings).mockResolvedValue({ active_provider: null, credentials: { zhipu: null, tavily: null } });
+    vi.mocked(getSearchSettings).mockResolvedValue({ active_provider: null, credentials: { zhipu: null, tavily: null, baidu: null } });
     vi.mocked(setSearchCredential).mockReset();
     vi.mocked(deleteSearchCredential).mockReset();
     vi.mocked(selectSearchProvider).mockReset();
   });
 
-  it("shows both providers and clears the key after validated save", async () => {
-    vi.mocked(setSearchCredential).mockResolvedValue({ active_provider: "zhipu", credentials: { zhipu, tavily: null } });
+  it("shows every provider and clears the key after validated save", async () => {
+    vi.mocked(setSearchCredential).mockResolvedValue({ active_provider: "zhipu", credentials: { zhipu, tavily: null, baidu: null } });
     const actor = userEvent.setup();
     renderSettings();
 
     expect(await screen.findByRole("heading", { name: "智谱搜索" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Tavily" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "百度搜索" })).toBeInTheDocument();
     const input = screen.getByLabelText("智谱搜索 API Key");
     await actor.type(input, "sensitive-zhipu-key");
     await actor.click(screen.getAllByRole("button", { name: "验证并保存" })[0]);
@@ -46,13 +48,27 @@ describe("SearchSettings", () => {
     expect(screen.queryByDisplayValue("sensitive-zhipu-key")).not.toBeInTheDocument();
   });
 
+  it("saves a baidu key to its own slot", async () => {
+    vi.mocked(setSearchCredential).mockResolvedValue({ active_provider: "baidu", credentials: { zhipu: null, tavily: null, baidu } });
+    const actor = userEvent.setup();
+    renderSettings();
+
+    const input = screen.getByLabelText("百度搜索 API Key");
+    await actor.type(input, "sensitive-baidu-key");
+    await actor.click(screen.getAllByRole("button", { name: "验证并保存" })[2]);
+
+    expect(setSearchCredential).toHaveBeenCalledWith("baidu", "sensitive-baidu-key");
+    expect(await screen.findByText("••••9012")).toBeInTheDocument();
+    expect(screen.queryByDisplayValue("sensitive-baidu-key")).not.toBeInTheDocument();
+  });
+
   it("switches providers and deletes a stored key", async () => {
-    vi.mocked(getSearchSettings).mockResolvedValue({ active_provider: "zhipu", credentials: { zhipu, tavily } });
-    vi.mocked(selectSearchProvider).mockResolvedValue({ active_provider: "tavily", credentials: { zhipu, tavily } });
-    vi.mocked(deleteSearchCredential).mockResolvedValue({ active_provider: null, credentials: { zhipu, tavily: null } });
+    vi.mocked(getSearchSettings).mockResolvedValue({ active_provider: "zhipu", credentials: { zhipu, tavily, baidu: null } });
+    vi.mocked(selectSearchProvider).mockResolvedValue({ active_provider: "tavily", credentials: { zhipu, tavily, baidu: null } });
+    vi.mocked(deleteSearchCredential).mockResolvedValue({ active_provider: null, credentials: { zhipu, tavily: null, baidu: null } });
     vi.spyOn(window, "confirm").mockReturnValue(true);
     const actor = userEvent.setup();
-    renderSettings({ active_provider: "zhipu", credentials: { zhipu, tavily } });
+    renderSettings({ active_provider: "zhipu", credentials: { zhipu, tavily, baidu: null } });
 
     const tavilyCard = (await screen.findByRole("heading", { name: "Tavily" })).closest("article");
     expect(tavilyCard).not.toBeNull();

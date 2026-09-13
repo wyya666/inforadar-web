@@ -150,7 +150,7 @@ export default function Home() {
           </article>
         </div>
         <div className="trust-cta">
-          <p>支持智谱与 Tavily 搜索，平台不限制扫描次数；实际额度和费用由搜索服务商决定。</p>
+          <p>支持智谱、Tavily 与百度搜索，平台不限制扫描次数；实际额度和费用由搜索服务商决定。</p>
           <Link href="/register">
             建立第一个雷达 <ExternalLink size={15} />
           </Link>

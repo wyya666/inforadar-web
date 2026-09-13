@@ -19,7 +19,7 @@ vi.mock("./api", async (importOriginal) => {
 
 describe("RadarList", () => {
   it("lists owned radars and pauses an active radar", async () => {
-    vi.mocked(getSearchSettings).mockResolvedValue({ active_provider: "zhipu", credentials: { zhipu: { provider: "zhipu", masked_key: "••••1234", status: "valid", last_validated_at: "2026-09-01T03:00:00Z" }, tavily: null } });
+    vi.mocked(getSearchSettings).mockResolvedValue({ active_provider: "zhipu", credentials: { zhipu: { provider: "zhipu", masked_key: "••••1234", status: "valid", last_validated_at: "2026-09-01T03:00:00Z" }, tavily: null, baidu: null } });
     const value = {
       id: "radar-1", name: "AI Agent", user_intent: "关注 AI", search_query: "AI Agent 发布", relevance_criteria: "正式发布",
       interval_minutes: 60, relevance_threshold: 70, status: "active" as const,
@@ -38,7 +38,7 @@ describe("RadarList", () => {
   });
 
   it("guides users and disables scan and resume without a valid search key", async () => {
-    vi.mocked(getSearchSettings).mockResolvedValue({ active_provider: null, credentials: { zhipu: null, tavily: null } });
+    vi.mocked(getSearchSettings).mockResolvedValue({ active_provider: null, credentials: { zhipu: null, tavily: null, baidu: null } });
     vi.mocked(listRadars).mockResolvedValue([{ id: "radar-1", name: "AI", user_intent: "AI", search_query: "AI", relevance_criteria: "AI", interval_minutes: 60, relevance_threshold: 70, status: "paused", pause_reason: "search_credential", next_scan_at: "2026-09-01T04:00:00Z", created_at: "2026-09-01T03:00:00Z", updated_at: "2026-09-01T03:00:00Z" }]);
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     render(<QueryClientProvider client={client}><RadarList /></QueryClientProvider>);
@@ -49,7 +49,7 @@ describe("RadarList", () => {
   });
 
   it("edits a radar plan and interval", async () => {
-    vi.mocked(getSearchSettings).mockResolvedValue({ active_provider: "tavily", credentials: { zhipu: null, tavily: { provider: "tavily", masked_key: "••••5678", status: "valid", last_validated_at: "2026-09-01T03:00:00Z" } } });
+    vi.mocked(getSearchSettings).mockResolvedValue({ active_provider: "tavily", credentials: { zhipu: null, tavily: { provider: "tavily", masked_key: "••••5678", status: "valid", last_validated_at: "2026-09-01T03:00:00Z" }, baidu: null } });
     const value = { id: "radar-1", name: "AI", user_intent: "AI", search_query: "AI", relevance_criteria: "AI 发布", interval_minutes: 60, relevance_threshold: 70, status: "active" as const, next_scan_at: "2026-09-01T04:00:00Z", created_at: "2026-09-01T03:00:00Z", updated_at: "2026-09-01T03:00:00Z" };
     vi.mocked(listRadars).mockResolvedValue([value]);
     vi.mocked(updateRadar).mockResolvedValue({ ...value, name: "Agent 发布", interval_minutes: 180 });

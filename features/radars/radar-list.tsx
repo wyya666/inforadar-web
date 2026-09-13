@@ -42,7 +42,7 @@ export function RadarList() {
   if (query.isPending) return <div className="empty-panel"><p>正在加载雷达…</p></div>;
   if (query.isError) return <div className="empty-panel"><p>雷达列表加载失败，请稍后重试。</p></div>;
   const searchReady = hasActiveSearchCredential(searchSettings.data);
-  const searchGuide = !searchSettings.isPending && !searchReady ? <section className="search-credential-guide"><CircleAlert size={22} /><div><h2>请先配置搜索服务</h2><p>{searchSettings.isError ? "暂时无法读取搜索配置，请刷新后重试。" : "添加有效的智谱或 Tavily Key 并选择当前平台后，才可扫描或恢复雷达。你仍然可以先创建雷达。"}</p></div><Link className="button button-dark" href="/settings">前往设置</Link></section> : null;
+  const searchGuide = !searchSettings.isPending && !searchReady ? <section className="search-credential-guide"><CircleAlert size={22} /><div><h2>请先配置搜索服务</h2><p>{searchSettings.isError ? "暂时无法读取搜索配置，请刷新后重试。" : "添加有效的智谱、Tavily 或百度 Key 并选择当前平台后，才可扫描或恢复雷达。你仍然可以先创建雷达。"}</p></div><Link className="button button-dark" href="/settings">前往设置</Link></section> : null;
   if (!query.data.length) return <div className="radar-list">{searchGuide}<section className="empty-panel"><div className="empty-radar"><RadarIcon /></div><h2>还没有雷达</h2><p>用一句话描述关注点，AI 会帮你完成搜索方案。</p><Link className="button button-primary" href="/radars/new"><Plus size={17} />创建第一个雷达</Link></section></div>;
 
   return <div className="radar-list">

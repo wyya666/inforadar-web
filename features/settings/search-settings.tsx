@@ -19,6 +19,7 @@ export const searchSettingsKey = ["search-settings"] as const;
 const providers: Array<{ id: SearchProvider; name: string; hint: string; placeholder: string }> = [
   { id: "zhipu", name: "智谱搜索", hint: "默认使用 search_std", placeholder: "输入智谱 API Key" },
   { id: "tavily", name: "Tavily", hint: "使用 Basic Search", placeholder: "tvly-..." },
+  { id: "baidu", name: "百度搜索", hint: "千帆 AI 搜索", placeholder: "bce-v3/ALTAK-..." },
 ];
 
 function errorMessage(error: unknown) {
@@ -43,7 +44,7 @@ export function hasActiveSearchCredential(settings?: SearchSettingsValue) {
 
 export function SearchSettings() {
   const client = useQueryClient();
-  const [keys, setKeys] = useState<Record<SearchProvider, string>>({ zhipu: "", tavily: "" });
+  const [keys, setKeys] = useState<Record<SearchProvider, string>>({ zhipu: "", tavily: "", baidu: "" });
   const [message, setMessage] = useState<string>();
   const settings = useQuery({ queryKey: searchSettingsKey, queryFn: getSearchSettings, retry: false });
   const updateCache = (value: SearchSettingsValue) => client.setQueryData(searchSettingsKey, value);
@@ -73,7 +74,7 @@ export function SearchSettings() {
   const mutationError = save.error ?? remove.error ?? select.error;
   return <section className="settings-panel search-settings-panel">
     <div className="settings-panel-title"><div><span>搜索服务</span><h2>自带搜索 API Key</h2></div><Search /></div>
-    <p className="settings-help">智谱与 Tavily 的 Key 会分别加密保存。验证 Key 会执行一次真实搜索并消耗一次平台调用，扫描只使用你选择的当前平台，不会自动回退。</p>
+    <p className="settings-help">智谱、Tavily 与百度的 Key 会分别加密保存。验证 Key 会执行一次真实搜索并消耗一次平台调用，扫描只使用你选择的当前平台，不会自动回退。</p>
     {settings.isPending ? <p className="settings-help">正在读取搜索配置…</p> : null}
     {settings.isError ? <p className="form-error" role="alert">搜索配置加载失败，请稍后刷新。</p> : null}
     <div className="search-provider-grid">
