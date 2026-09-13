@@ -165,6 +165,60 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/search-settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Returns the user's selected BYOK search provider and safe credential metadata. API keys are never returned. */
+        get: operations["getSearchSettings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/search-settings/credentials/{provider}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: components["schemas"]["SearchProvider"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** @description Validates and encrypts a user-owned search API key. The first valid search credential becomes active. */
+        put: operations["setSearchCredential"];
+        post?: never;
+        /** @description Deletes this provider's user-owned key. Deleting the active key pauses active radars for search credentials. */
+        delete: operations["deleteSearchCredential"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/search-settings/provider": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** @description Selects the sole provider used by subsequent scans. No fallback provider is used. */
+        put: operations["selectSearchProvider"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/radar-options": {
         parameters: {
             query?: never;
@@ -525,7 +579,7 @@ export interface components {
         };
         CredentialMetadata: {
             /** @enum {string} */
-            provider: "deepseek";
+            provider: "deepseek" | "zhipu" | "tavily";
             masked_key: string;
             /** @enum {string} */
             status: "valid" | "invalid" | "insufficient_balance";
@@ -533,6 +587,25 @@ export interface components {
             total_balance?: string;
             /** Format: date-time */
             last_validated_at: string;
+        };
+        /** @enum {string} */
+        SearchProvider: "zhipu" | "tavily";
+        SearchCredentialMetadata: {
+            provider: components["schemas"]["SearchProvider"];
+            /** @description Masked suffix only; the API key is never returned. */
+            masked_key: string;
+            /** @enum {string} */
+            status: "valid" | "invalid" | "insufficient_balance";
+            /** Format: date-time */
+            last_validated_at: string;
+        };
+        SearchCredentials: {
+            zhipu: components["schemas"]["SearchCredentialMetadata"] | null;
+            tavily: components["schemas"]["SearchCredentialMetadata"] | null;
+        };
+        SearchSettings: {
+            active_provider: components["schemas"]["SearchProvider"] | null;
+            credentials: components["schemas"]["SearchCredentials"];
         };
         RadarPlan: {
             name: string;
@@ -559,6 +632,8 @@ export interface components {
             relevance_threshold: number;
             /** @enum {string} */
             status: "active" | "paused";
+            /** @enum {string|null} */
+            pause_reason?: "manual" | "deepseek_credential" | "search_credential" | null;
             /** Format: date-time */
             next_scan_at: string;
             /** Format: date-time */
@@ -680,6 +755,17 @@ export interface components {
                 };
             };
         };
+        /** @description Current user-owned search settings. */
+        SearchSettingsResponse: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    settings: components["schemas"]["SearchSettings"];
+                };
+            };
+        };
         /** @description Invalid request. */
         BadRequest: {
             headers: {
@@ -718,6 +804,24 @@ export interface components {
         };
         /** @description Resource conflict. */
         Conflict: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+        /** @description A valid active user-owned search credential is required (error code search_credential_required or search_quota_exhausted). */
+        SearchCredentialRequired: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+        /** @description The active-radar limit was reached, or resume/manual scan requires a valid active search credential (error code active_radar_limit or search_credential_required). */
+        RadarConflict: {
             headers: {
                 [name: string]: unknown;
             };
@@ -1048,6 +1152,88 @@ export interface operations {
             404: components["responses"]["NotFound"];
         };
     };
+    getSearchSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current search settings. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        settings: components["schemas"]["SearchSettings"];
+                    };
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+        };
+    };
+    setSearchCredential: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: components["schemas"]["SearchProvider"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    api_key: string;
+                };
+            };
+        };
+        responses: {
+            200: components["responses"]["SearchSettingsResponse"];
+            400: components["responses"]["BadRequest"];
+            409: components["responses"]["SearchCredentialRequired"];
+            502: components["responses"]["ProviderUnavailable"];
+        };
+    };
+    deleteSearchCredential: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: components["schemas"]["SearchProvider"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: components["responses"]["SearchSettingsResponse"];
+            400: components["responses"]["BadRequest"];
+            409: components["responses"]["SearchCredentialRequired"];
+        };
+    };
+    selectSearchProvider: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    provider: components["schemas"]["SearchProvider"];
+                };
+            };
+        };
+        responses: {
+            200: components["responses"]["SearchSettingsResponse"];
+            400: components["responses"]["BadRequest"];
+            409: components["responses"]["SearchCredentialRequired"];
+        };
+    };
     getRadarOptions: {
         parameters: {
             query?: never;
@@ -1213,7 +1399,7 @@ export interface operations {
         responses: {
             200: components["responses"]["RadarResponse"];
             404: components["responses"]["NotFound"];
-            409: components["responses"]["Conflict"];
+            409: components["responses"]["RadarConflict"];
             /** @description Manual scan cooldown is active. */
             429: {
                 headers: {

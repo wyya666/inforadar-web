@@ -25,7 +25,7 @@ describe("RadarPlanEditor", () => {
     await actor.clear(screen.getByLabelText("雷达名称"));
     await actor.type(screen.getByLabelText("雷达名称"), "Agent 新进展");
     await actor.selectOptions(screen.getByLabelText("扫描频率"), "60");
-    await actor.click(screen.getByRole("button", { name: "确认并启动雷达" }));
+    await actor.click(screen.getByRole("button", { name: "确认并创建雷达" }));
 
     expect(vi.mocked(createRadar).mock.calls[0]?.[0]).toEqual(expect.objectContaining({ name: "Agent 新进展", interval_minutes: 60 }));
     expect(push).toHaveBeenCalledWith("/radars");

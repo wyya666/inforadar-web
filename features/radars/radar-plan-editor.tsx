@@ -41,6 +41,6 @@ export function RadarPlanEditor({ intent, plan, onBack }: { intent: string; plan
     <label><span>扫描频率</span><select value={interval} onChange={(event) => setInterval(Number(event.target.value) as Interval)}>{intervals.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></label>
     <UsageEstimate intervalMinutes={interval} />
     {error ? <p className="form-error" role="alert">{error}</p> : null}
-    <div className="plan-actions"><button className="button button-ghost" onClick={onBack} type="button"><ArrowLeft size={16} />重新描述</button><button className="button button-primary" disabled={pending} type="submit"><Play size={16} />{pending ? "正在启动…" : "确认并启动雷达"}</button></div>
+    <div className="plan-actions"><button className="button button-ghost" onClick={onBack} type="button"><ArrowLeft size={16} />重新描述</button><button className="button button-primary" disabled={pending} type="submit"><Play size={16} />{pending ? "正在创建…" : "确认并创建雷达"}</button></div>
   </form>;
 }

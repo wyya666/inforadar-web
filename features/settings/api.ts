@@ -26,6 +26,8 @@ export async function deleteAccount(): Promise<void> {
 }
 
 export type CredentialMetadata = components["schemas"]["CredentialMetadata"];
+export type SearchProvider = components["schemas"]["SearchProvider"];
+export type SearchSettings = components["schemas"]["SearchSettings"];
 
 export async function getDeepSeekCredential(): Promise<CredentialMetadata | null> {
   const { data, error, response } = await apiClient.GET("/credentials/deepseek");
@@ -43,4 +45,33 @@ export async function setDeepSeekCredential(apiKey: string): Promise<CredentialM
 export async function deleteDeepSeekCredential(): Promise<void> {
   const { error, response } = await apiClient.DELETE("/credentials/deepseek");
   if (error) throw apiError(error, response);
+}
+
+export async function getSearchSettings(): Promise<SearchSettings> {
+  const { data, error, response } = await apiClient.GET("/search-settings");
+  if (error || !data) throw apiError(error, response);
+  return data.settings;
+}
+
+export async function setSearchCredential(provider: SearchProvider, apiKey: string): Promise<SearchSettings> {
+  const { data, error, response } = await apiClient.PUT("/search-settings/credentials/{provider}", {
+    params: { path: { provider } },
+    body: { api_key: apiKey },
+  });
+  if (error || !data) throw apiError(error, response);
+  return data.settings;
+}
+
+export async function deleteSearchCredential(provider: SearchProvider): Promise<SearchSettings> {
+  const { data, error, response } = await apiClient.DELETE("/search-settings/credentials/{provider}", {
+    params: { path: { provider } },
+  });
+  if (error || !data) throw apiError(error, response);
+  return data.settings;
+}
+
+export async function selectSearchProvider(provider: SearchProvider): Promise<SearchSettings> {
+  const { data, error, response } = await apiClient.PUT("/search-settings/provider", { body: { provider } });
+  if (error || !data) throw apiError(error, response);
+  return data.settings;
 }

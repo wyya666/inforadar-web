@@ -5,9 +5,12 @@ import { describe, expect, it, vi } from "vitest";
 
 import { listRadars, runRadarAction, updateRadar } from "./api";
 import { RadarList } from "./radar-list";
-import { getUsage } from "@/features/usage/api";
+import { getSearchSettings } from "@/features/settings/api";
 
-vi.mock("@/features/usage/api", () => ({ getUsage: vi.fn() }));
+vi.mock("@/features/settings/api", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/features/settings/api")>();
+  return { ...actual, getSearchSettings: vi.fn() };
+});
 
 vi.mock("./api", async (importOriginal) => {
   const actual = await importOriginal<typeof import("./api")>();
@@ -16,7 +19,7 @@ vi.mock("./api", async (importOriginal) => {
 
 describe("RadarList", () => {
   it("lists owned radars and pauses an active radar", async () => {
-	vi.mocked(getUsage).mockResolvedValue({ remaining: 100, monthly_limit: 100, reset_at: "2026-10-01T00:00:00+08:00" });
+    vi.mocked(getSearchSettings).mockResolvedValue({ active_provider: "zhipu", credentials: { zhipu: { provider: "zhipu", masked_key: "••••1234", status: "valid", last_validated_at: "2026-09-01T03:00:00Z" }, tavily: null } });
     const value = {
       id: "radar-1", name: "AI Agent", user_intent: "关注 AI", search_query: "AI Agent 发布", relevance_criteria: "正式发布",
       interval_minutes: 60, relevance_threshold: 70, status: "active" as const,
@@ -34,17 +37,19 @@ describe("RadarList", () => {
     expect(await screen.findByText("已暂停")).toBeInTheDocument();
   });
 
-  it("disables manual scans when credits are exhausted", async () => {
-    vi.mocked(getUsage).mockResolvedValue({ remaining: 0, monthly_limit: 100, reset_at: "2026-10-01T00:00:00+08:00" });
-    vi.mocked(listRadars).mockResolvedValue([{ id: "radar-1", name: "AI", user_intent: "AI", search_query: "AI", relevance_criteria: "AI", interval_minutes: 60, relevance_threshold: 70, status: "active", next_scan_at: "2026-09-01T04:00:00Z", created_at: "2026-09-01T03:00:00Z", updated_at: "2026-09-01T03:00:00Z" }]);
+  it("guides users and disables scan and resume without a valid search key", async () => {
+    vi.mocked(getSearchSettings).mockResolvedValue({ active_provider: null, credentials: { zhipu: null, tavily: null } });
+    vi.mocked(listRadars).mockResolvedValue([{ id: "radar-1", name: "AI", user_intent: "AI", search_query: "AI", relevance_criteria: "AI", interval_minutes: 60, relevance_threshold: 70, status: "paused", pause_reason: "search_credential", next_scan_at: "2026-09-01T04:00:00Z", created_at: "2026-09-01T03:00:00Z", updated_at: "2026-09-01T03:00:00Z" }]);
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     render(<QueryClientProvider client={client}><RadarList /></QueryClientProvider>);
     expect(await screen.findByRole("button", { name: "立即扫描" })).toBeDisabled();
-    expect(screen.getByText("本月搜索额度已用完，自动和手动扫描已暂停。")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "恢复雷达" })).toBeDisabled();
+    expect(screen.getByRole("heading", { name: "请先配置搜索服务" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "前往设置" })).toHaveAttribute("href", "/settings");
   });
 
   it("edits a radar plan and interval", async () => {
-    vi.mocked(getUsage).mockResolvedValue({ remaining: 100, monthly_limit: 100, reset_at: "2026-10-01T00:00:00+08:00" });
+    vi.mocked(getSearchSettings).mockResolvedValue({ active_provider: "tavily", credentials: { zhipu: null, tavily: { provider: "tavily", masked_key: "••••5678", status: "valid", last_validated_at: "2026-09-01T03:00:00Z" } } });
     const value = { id: "radar-1", name: "AI", user_intent: "AI", search_query: "AI", relevance_criteria: "AI 发布", interval_minutes: 60, relevance_threshold: 70, status: "active" as const, next_scan_at: "2026-09-01T04:00:00Z", created_at: "2026-09-01T03:00:00Z", updated_at: "2026-09-01T03:00:00Z" };
     vi.mocked(listRadars).mockResolvedValue([value]);
     vi.mocked(updateRadar).mockResolvedValue({ ...value, name: "Agent 发布", interval_minutes: 180 });

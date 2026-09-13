@@ -1,7 +1,7 @@
 # InfoRadar Web
 
 InfoRadar 的 Next.js 用户端与管理员端，包括注册登录、雷达、结果时间线、
-额度、设置和运营管理页面。
+搜索服务设置、账户设置和运营管理页面。
 
 ## Local development
 

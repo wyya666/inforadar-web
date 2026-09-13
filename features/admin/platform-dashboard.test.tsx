@@ -13,8 +13,8 @@ describe("PlatformDashboard", () => {
     vi.mocked(listAuditRecords).mockResolvedValue([{ id: "audit-1", actor_id: "admin-1", action: "credits.adjusted", target_type: "user", target_id: "user-1", metadata: "{}", created_at: "2026-09-01T03:00:00Z" }]);
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     render(<QueryClientProvider client={client}><PlatformDashboard /></QueryClientProvider>);
-    expect(await screen.findByText("8,100 / 10,000")).toBeInTheDocument();
-    expect(screen.getByText("预算预警")).toBeInTheDocument();
+    expect(await screen.findByText("8 个有效")).toBeInTheDocument();
+    expect(screen.queryByText("月度 Web Search")).not.toBeInTheDocument();
     expect(screen.getByText("credits.adjusted")).toBeInTheDocument();
   });
 });

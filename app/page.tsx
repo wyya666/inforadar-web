@@ -64,7 +64,7 @@ export default function Home() {
               开始创建雷达
               <ArrowRight size={17} />
             </Link>
-            <span className="hero-note">自带 DeepSeek API Key · 搜索额度由平台提供</span>
+            <span className="hero-note">自带 DeepSeek 与搜索 API Key · 用量由服务商决定</span>
           </div>
         </div>
 
@@ -150,7 +150,7 @@ export default function Home() {
           </article>
         </div>
         <div className="trust-cta">
-          <p>每月包含 100 次搜索额度，最多运行 3 个雷达。公开 Beta 期间规则可能调整。</p>
+          <p>支持智谱与 Tavily 搜索，平台不限制扫描次数；实际额度和费用由搜索服务商决定。</p>
           <Link href="/register">
             建立第一个雷达 <ExternalLink size={15} />
           </Link>

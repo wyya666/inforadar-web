@@ -116,7 +116,7 @@ test("successful login reaches a live dashboard overview", async ({ page }) => {
   await expect(page).toHaveURL(/\/dashboard$/);
   await expect(page.getByRole("heading", { name: "你的信息雷达" })).toBeVisible();
   await expect(page.getByText("1 / 3")).toBeVisible();
-  await expect(page.getByText("76 / 100")).toBeVisible();
+  await expect(page.getByText("本月搜索额度")).toHaveCount(0);
   await expect(page.getByText("AI Agent 行业进展")).toBeVisible();
   await expect(page.getByText("Radar User")).toBeVisible();
 });
