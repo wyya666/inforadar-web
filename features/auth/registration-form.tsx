@@ -12,13 +12,16 @@ import { ApiError, registerAccount } from "./api";
 const registrationSchema = z.object({
   display_name: z.string().trim().min(1, "请输入昵称").max(80, "昵称不能超过 80 个字符"),
   email: z.email("请输入有效的邮箱地址"),
-  password: z.string().min(12, "密码至少需要 12 个字符"),
+  password: z.string().min(4, "密码至少需要 4 个字符"),
 });
 
 type RegistrationValues = z.infer<typeof registrationSchema>;
 
 export function RegistrationForm() {
-  const [submittedEmail, setSubmittedEmail] = useState<string>();
+  const [registrationResult, setRegistrationResult] = useState<{
+    email: string;
+    verificationRequired: boolean;
+  }>();
   const [submitError, setSubmitError] = useState<string>();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegistrationValues>({
     resolver: zodResolver(registrationSchema),
@@ -28,19 +31,28 @@ export function RegistrationForm() {
     setSubmitError(undefined);
     try {
       const result = await registerAccount(values);
-      setSubmittedEmail(result.user.email);
+      setRegistrationResult({
+        email: result.user.email,
+        verificationRequired: result.verification_required,
+      });
     } catch (error) {
       setSubmitError(error instanceof ApiError ? error.message : "注册失败，请稍后重试");
     }
   }
 
-  if (submittedEmail) {
+  if (registrationResult) {
     return (
       <div className="auth-success" role="status">
         <CheckCircle2 size={30} aria-hidden="true" />
         <div>
-          <h2>验证邮件已发送</h2>
-          <p>请前往 <strong>{submittedEmail}</strong> 点击验证链接，然后返回登录。</p>
+          <h2>{registrationResult.verificationRequired ? "验证邮件已发送" : "账户创建成功"}</h2>
+          <p>
+            {registrationResult.verificationRequired ? (
+              <>请前往 <strong>{registrationResult.email}</strong> 点击验证链接，然后返回登录。</>
+            ) : (
+              <><strong>{registrationResult.email}</strong> 已注册，现在可以直接登录。</>
+            )}
+          </p>
         </div>
         <Link className="button button-dark auth-submit" href="/login">前往登录 <ArrowRight size={17} /></Link>
       </div>
@@ -61,7 +73,7 @@ export function RegistrationForm() {
       </label>
       <label>
         <span>密码</span>
-        <input autoComplete="new-password" type="password" placeholder="至少 12 个字符" {...register("password")} />
+        <input autoComplete="new-password" type="password" placeholder="至少 4 个字符" {...register("password")} />
         {errors.password ? <small role="alert">{errors.password.message}</small> : null}
       </label>
       {submitError ? <p className="form-error" role="alert">{submitError}</p> : null}

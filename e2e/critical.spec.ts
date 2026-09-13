@@ -99,11 +99,11 @@ test("registration rejects malformed account data before submission", async ({ p
   await page.goto("/register");
   await page.getByLabel("昵称").fill("测试用户");
   await page.getByLabel("邮箱").fill("not-an-email");
-  await page.getByLabel("密码").fill("short");
+  await page.getByLabel("密码").fill("abc");
   await page.getByRole("button", { name: "创建账户" }).click();
 
   await expect(page.getByText("请输入有效的邮箱地址")).toBeVisible();
-  await expect(page.getByText("密码至少需要 12 个字符")).toBeVisible();
+  await expect(page.getByText("密码至少需要 4 个字符")).toBeVisible();
 });
 
 test("successful login reaches a live dashboard overview", async ({ page }) => {

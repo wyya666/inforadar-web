@@ -29,9 +29,27 @@ describe("password recovery", () => {
     vi.mocked(resetPassword).mockResolvedValue();
     const actor = userEvent.setup();
     render(<ResetPasswordForm token="reset-token" />);
-    await actor.type(screen.getByLabelText("新密码"), "an entirely new secure password");
+    await actor.type(screen.getByLabelText("新密码"), "5678");
     await actor.click(screen.getByRole("button", { name: "更新密码" }));
-    expect(resetPassword).toHaveBeenCalledWith("reset-token", "an entirely new secure password");
+    expect(resetPassword).toHaveBeenCalledWith("reset-token", "5678");
     expect(await screen.findByText("密码已更新")).toBeInTheDocument();
+  });
+
+  it("rejects a three-character replacement password", async () => {
+    const actor = userEvent.setup();
+    render(<ResetPasswordForm token="reset-token" />);
+    await actor.type(screen.getByLabelText("新密码"), "abc");
+    await actor.click(screen.getByRole("button", { name: "更新密码" }));
+    expect(await screen.findByText("密码至少需要 4 个字符")).toBeInTheDocument();
+    expect(resetPassword).not.toHaveBeenCalled();
+  });
+
+  it("counts Unicode replacement-password length by characters", async () => {
+    const actor = userEvent.setup();
+    render(<ResetPasswordForm token="reset-token" />);
+    await actor.type(screen.getByLabelText("新密码"), "🙂🙂🙂");
+    await actor.click(screen.getByRole("button", { name: "更新密码" }));
+    expect(await screen.findByText("密码至少需要 4 个字符")).toBeInTheDocument();
+    expect(resetPassword).not.toHaveBeenCalled();
   });
 });

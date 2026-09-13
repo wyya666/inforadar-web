@@ -10,7 +10,7 @@ import { z } from "zod";
 import { ApiError, requestPasswordReset, resetPassword } from "./api";
 
 const emailSchema = z.object({ email: z.email("请输入有效的邮箱地址") });
-const passwordSchema = z.object({ password: z.string().min(12, "密码至少需要 12 个字符") });
+const passwordSchema = z.object({ password: z.string().min(4, "密码至少需要 4 个字符") });
 
 export function ForgotPasswordForm() {
   const [accepted, setAccepted] = useState(false);
@@ -45,7 +45,7 @@ export function ResetPasswordForm({ token }: { token?: string }) {
     try { await resetPassword(token, password); setComplete(true); }
     catch (error) { setSubmitError(error instanceof ApiError ? error.message : "重置失败，请重新申请链接"); }
   })} noValidate>
-    <label><span>新密码</span><input type="password" autoComplete="new-password" placeholder="至少 12 个字符" {...register("password")} />{errors.password ? <small role="alert">{errors.password.message}</small> : null}</label>
+    <label><span>新密码</span><input type="password" autoComplete="new-password" placeholder="至少 4 个字符" {...register("password")} />{errors.password ? <small role="alert">{errors.password.message}</small> : null}</label>
     {submitError ? <p className="form-error" role="alert">{submitError}</p> : null}
     <button className="button button-primary auth-submit" disabled={isSubmitting} type="submit">{isSubmitting ? "正在更新…" : "更新密码"}<Save size={17} /></button>
   </form>;

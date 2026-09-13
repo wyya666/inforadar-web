@@ -23,7 +23,7 @@ function ProfileForm({ user }: { user: Awaited<ReturnType<typeof getCurrentUser>
   const [saved, setSaved] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [securityMessage, setSecurityMessage] = useState<string>();
+  const [securityMessage, setSecurityMessage] = useState<{ text: string; error: boolean }>();
 
   const profileMutation = useMutation({
     mutationFn: updateProfile,
@@ -42,11 +42,15 @@ function ProfileForm({ user }: { user: Awaited<ReturnType<typeof getCurrentUser>
   async function submitPassword(event: FormEvent) {
     event.preventDefault();
     setSecurityMessage(undefined);
+    if (Array.from(newPassword).length < 4) {
+      setSecurityMessage({ text: "密码至少需要 4 个字符", error: true });
+      return;
+    }
     try {
       await changePassword(currentPassword, newPassword);
-      setSecurityMessage("密码已更新，请重新登录");
+      setSecurityMessage({ text: "密码已更新，请重新登录", error: false });
       setCurrentPassword(""); setNewPassword("");
-    } catch { setSecurityMessage("密码更新失败，请检查当前密码"); }
+    } catch { setSecurityMessage({ text: "密码更新失败，请检查当前密码", error: true }); }
   }
 
   async function removeAccount() {
@@ -62,7 +66,7 @@ function ProfileForm({ user }: { user: Awaited<ReturnType<typeof getCurrentUser>
       <form className="settings-form" onSubmit={submitProfile}>
         <label><span>昵称</span><input value={displayName} onChange={(event) => setDisplayName(event.target.value)} /></label>
         <label className="toggle-row"><input aria-label="接收每日摘要" type="checkbox" checked={digestEnabled} onChange={(event) => setDigestEnabled(event.target.checked)} /><span><strong>接收每日摘要</strong><small>每天北京时间 09:00 汇总新的命中结果；没有新命中则不发送。</small></span></label>
-        <div className="digest-rules"><span>每封最多 20 条</span><span>同一结果只汇总一次</span><span>验证与安全邮件始终开启</span></div>
+        <div className="digest-rules"><span>每封最多 20 条</span><span>同一结果只汇总一次</span><span>密码找回邮件始终开启</span></div>
         {profileMutation.isError ? <p className="form-error">资料保存失败</p> : null}
         {saved ? <p className="form-success" role="status">资料已保存</p> : null}
         <button className="button button-dark settings-action" disabled={profileMutation.isPending} type="submit"><Save size={16} />保存资料</button>
@@ -72,8 +76,8 @@ function ProfileForm({ user }: { user: Awaited<ReturnType<typeof getCurrentUser>
       <div className="settings-panel-title"><div><span>账户安全</span><h2>更改密码</h2></div><KeyRound /></div>
       <form className="settings-form settings-form-grid" onSubmit={submitPassword}>
         <label><span>当前密码</span><input type="password" autoComplete="current-password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} required /></label>
-        <label><span>新密码</span><input type="password" autoComplete="new-password" minLength={12} value={newPassword} onChange={(event) => setNewPassword(event.target.value)} required /></label>
-        {securityMessage ? <p className="form-success" role="status">{securityMessage}</p> : null}
+        <label><span>新密码</span><input type="password" autoComplete="new-password" minLength={4} value={newPassword} onChange={(event) => setNewPassword(event.target.value)} required /></label>
+        {securityMessage ? <p className={securityMessage.error ? "form-error" : "form-success"} role="status">{securityMessage.text}</p> : null}
         <button className="button button-dark settings-action" type="submit">更新密码</button>
       </form>
     </section>

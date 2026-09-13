@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { getCurrentUser } from "@/features/auth/api";
-import { updateProfile } from "./api";
+import { changePassword, updateProfile } from "./api";
 import { ProfileSettings } from "./profile-settings";
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }) }));
@@ -22,6 +22,7 @@ describe("ProfileSettings", () => {
       credit_reset_at: "2026-10-01T00:00:00Z",
     });
     vi.mocked(updateProfile).mockReset();
+    vi.mocked(changePassword).mockReset();
   });
 
   it("updates the profile and digest preference", async () => {
@@ -36,6 +37,7 @@ describe("ProfileSettings", () => {
 
     const name = await screen.findByLabelText("昵称");
     expect(screen.getByText("同一结果只汇总一次")).toBeInTheDocument();
+    expect(screen.getByLabelText("新密码")).toHaveAttribute("minlength", "4");
     await actor.clear(name);
     await actor.type(name, "New Name");
     await actor.click(screen.getByLabelText("接收每日摘要"));
@@ -43,5 +45,19 @@ describe("ProfileSettings", () => {
 
     expect(vi.mocked(updateProfile).mock.calls[0]?.[0]).toEqual({ display_name: "New Name", digest_enabled: false });
     expect(await screen.findByText("资料已保存")).toBeInTheDocument();
+  });
+
+  it("counts Unicode replacement-password length by characters", async () => {
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const actor = userEvent.setup();
+    render(<QueryClientProvider client={queryClient}><ProfileSettings /></QueryClientProvider>);
+
+    await screen.findByLabelText("昵称");
+    await actor.type(screen.getByLabelText("当前密码"), "old password");
+    await actor.type(screen.getByLabelText("新密码"), "🙂🙂🙂");
+    await actor.click(screen.getByRole("button", { name: "更新密码" }));
+
+    expect(await screen.findByText("密码至少需要 4 个字符")).toBeInTheDocument();
+    expect(changePassword).not.toHaveBeenCalled();
   });
 });

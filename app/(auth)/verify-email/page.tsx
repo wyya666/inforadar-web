@@ -6,7 +6,7 @@ export default async function VerifyEmailPage({ searchParams }: { searchParams: 
   const token = Array.isArray(query.token) ? query.token[0] : query.token;
 
   return (
-    <AuthCard eyebrow="邮箱验证" title="确认你的邮箱" description="完成验证后，登录会话才会被启用。">
+    <AuthCard eyebrow="兼容页面" title="确认邮箱记录" description="新账号无需验证即可登录；此页面仅用于兼容已有验证链接。">
       <VerifyEmailStatus token={token} />
     </AuthCard>
   );
